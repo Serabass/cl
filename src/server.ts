@@ -18,6 +18,10 @@ export class Server {
             socket.on('add', ([a, b]: any) => {
                 socket.emit('add:result', a + b);
             });
+
+            console.log('broadcast');
+            socket.broadcast.emit('sandbox', {a: 1});
+            socket.broadcast.emit('sandbox', {a: 2});
         });
         server.listen(+env.SERVER_PORT);
         console.log(`Server listening on port ${env.SERVER_PORT}`)

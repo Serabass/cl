@@ -22,6 +22,10 @@ export class Client {
         this.client.on('connect', () => {
             console.log('Connected');
         });
+
+        this.client.on('sandbox', (a) => {
+            console.log('sandbox', a);
+        });
     }
 
     @ClusterFunction()
@@ -48,3 +52,6 @@ export class Client {
         });
     }
 }
+
+let client = new Client();
+client.init()
