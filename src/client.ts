@@ -17,24 +17,17 @@ export class Client {
     }
 
     public init() {
+        console.log('metadata', Reflect.getMetadata('ClusterFunctions', this.constructor));
         this.client.connect();
 
-        this.client.on('connect', () => {
-            console.log('Connected');
-        });
-
-        this.client.on('sandbox', (a) => {
-            console.log('sandbox', a);
+        this.client.on('ClusterFunctionRequest', (res) => {
+            console.log('client ClusterFunctionRequest', res);
         });
     }
 
     @ClusterFunction()
     public add(a: number, b: number) {
         return a + b;
-    }
-
-    public async rAdd() {
-
     }
 
     public request(fn: string, args: any) {
@@ -45,13 +38,10 @@ export class Client {
             this.client.emit('ClusterFunctionRequest', {
                 fn,
                 args
-            }).once('request:add:result', (result) => {
+            }).once('ClusterFunctionResponse', (result) => {
                 clearTimeout(timeout);
                 resolve(result);
             });
         });
     }
 }
-
-let client = new Client();
-client.init()

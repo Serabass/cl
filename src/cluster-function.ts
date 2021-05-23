@@ -1,13 +1,13 @@
 
-interface ClusterFunctionType {
+export interface ClusterFunctionType {
     propertyKey: string | symbol;
     opts: any;
 }
 
-
 export function ClusterFunction(opts = {}): MethodDecorator {
-    return ((target, propertyKey, descriptor) => {
-        let ClusterFunctions: ClusterFunctionType[] = Reflect.getMetadata('ClusterFunctions', target);
+    return ((target, propertyKey, descriptor) => {;
+        let trg = target.constructor;
+        let ClusterFunctions: ClusterFunctionType[] = Reflect.getMetadata('ClusterFunctions', trg);
 
         if (!ClusterFunctions) {
             ClusterFunctions = [];
@@ -18,6 +18,6 @@ export function ClusterFunction(opts = {}): MethodDecorator {
             opts
         });
 
-        Reflect.defineMetadata('ClusterFunctions', target, ClusterFunctions);
+        Reflect.defineMetadata('ClusterFunctions', trg, ClusterFunctions);
     });
 }
