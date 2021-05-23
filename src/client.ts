@@ -1,5 +1,7 @@
+import 'reflect-metadata';
 import socketIO, {Socket} from 'socket.io-client';
 import * as d from 'dotenv';
+import {ClusterFunction} from './cluster-function';
 
 let env = d.config().parsed ?? {};
 
@@ -7,17 +9,11 @@ let env = d.config().parsed ?? {};
 //     console.log('add:result', res);
 // });
 
-export function ClusterFunction(opts = {}): MethodDecorator {
-    return ((target, propertyKey, descriptor) => {
-
-    });
-}
-
 export class Client {
     private client: Socket;
 
     public constructor(private uri: string = `http://localhost:${env.SERVER_PORT}`) {
-        this.client = socketIO(`http://localhost:${env.SERVER_PORT}`)
+        this.client = socketIO(uri)
     }
 
     public init() {
