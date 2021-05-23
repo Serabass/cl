@@ -1,7 +1,30 @@
 import 'reflect-metadata';
 import socketIO, {Socket} from 'socket.io-client';
 import * as d from 'dotenv';
-import {ClusterFunction} from './cluster-function';
+
+export interface ClusterFunctionType {
+    propertyKey: string | symbol;
+    opts: any;
+}
+
+export function ClusterFunction(opts = {}): MethodDecorator {
+    return ((target, propertyKey, descriptor) => {
+        let trg = target.constructor;
+        console.log('ClusterFunction', trg);
+        let ClusterFunctions: ClusterFunctionType[] = Reflect.getMetadata('ClusterFunctions', trg);
+
+        if (!ClusterFunctions) {
+            ClusterFunctions = [];
+        }
+
+        ClusterFunctions.push({
+            propertyKey,
+            opts
+        });
+
+        Reflect.defineMetadata('ClusterFunctions', trg, ClusterFunctions);
+    });
+}
 
 let env = d.config().parsed ?? {};
 
@@ -17,7 +40,6 @@ export class Client {
     }
 
     public init() {
-        console.log('metadata', Reflect.getMetadata('ClusterFunctions', this.constructor));
         this.client.connect();
 
         this.client.on('ClusterFunctionRequest', (res) => {
